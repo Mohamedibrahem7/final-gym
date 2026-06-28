@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>برنامج الجيم — أجهزة وكيبل</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Inter:wght@500;600;700&display=swap');
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --purple:#7c3aed;--teal:#0d9488;--coral:#dc2626;--green:#16a34a;--pink:#c026d3;
+  --dark:#1a1a2e;--dark2:#16213e;--dark3:#0f3460;--accent:#e94560;--border:#e5e7eb;
+  --card-radius:14px;--gap:14px;
+}
+html{scroll-behavior:smooth}
+body{font-family:'Cairo',Arial,sans-serif;background:#f0f2f8;color:var(--dark);direction:rtl;min-height:100vh}
+
+/* NAV */
+.top-nav{background:var(--dark);position:sticky;top:0;z-index:200;border-bottom:2px solid var(--accent)}
+.nav-inner{max-width:1200px;margin:0 auto;padding:0 16px;display:flex;align-items:center;gap:0}
+.nav-brand{color:#fff;font-size:13px;font-weight:900;padding:13px 0;margin-left:auto;white-space:nowrap;font-family:'Inter',sans-serif;flex-shrink:0}
+.nav-tabs{display:flex;gap:0;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.nav-tabs::-webkit-scrollbar{display:none}
+.nav-tab{padding:13px 12px;color:#a8b2d8;font-size:11px;font-weight:600;cursor:pointer;border-bottom:3px solid transparent;transition:all .2s;white-space:nowrap;border-top:none;border-left:none;border-right:none;background:none;font-family:'Cairo',sans-serif}
+.nav-tab:hover{color:#fff}.nav-tab.active{color:#fff;border-bottom-color:var(--accent)}
+
+/* LAYOUT */
+.page{max-width:1200px;margin:0 auto}
+.section{display:none;padding:16px}.section.active{display:block}
+
+/* HERO */
+.cover-hero{background:linear-gradient(135deg,var(--dark) 0%,var(--dark2) 55%,var(--dark3) 100%);border-radius:var(--card-radius);padding:clamp(28px,5vw,52px) clamp(20px,4vw,40px);text-align:center;color:#fff;margin-bottom:16px}
+.cover-hero h1{font-size:clamp(20px,4vw,32px);font-weight:900;margin-bottom:6px;font-family:'Inter',sans-serif}
+.cover-hero h2{font-size:clamp(13px,2.5vw,17px);color:var(--accent);margin-bottom:12px}
+.cover-divider{width:48px;height:3px;background:var(--accent);border-radius:2px;margin:10px auto}
+.cover-badges{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin-top:12px}
+.cover-badge{background:rgba(233,69,96,.15);border:1px solid var(--accent);color:var(--accent);padding:4px 11px;border-radius:20px;font-size:10px;font-weight:600}
+
+/* STATS */
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px}
+@media(max-width:480px){.stats-row{grid-template-columns:repeat(2,1fr)}}
+.stat-card{background:#fff;border-radius:12px;padding:14px 10px;text-align:center;box-shadow:0 1px 4px rgba(0,0,0,.06)}
+.stat-num{font-size:clamp(22px,4vw,28px);font-weight:900;font-family:'Inter',sans-serif}
+.stat-lbl{font-size:10px;color:#888;margin-top:3px}
+
+/* WEEK GRID */
+.week-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-bottom:16px}
+@media(max-width:500px){.week-grid{grid-template-columns:repeat(4,1fr)}}
+.wday{border-radius:10px;padding:10px 4px;text-align:center;border:1.5px solid var(--border);background:#fff;transition:transform .15s}
+.wday.clickable{cursor:pointer}.wday.clickable:hover{transform:translateY(-2px)}
+.wday.active{color:#fff;border-color:transparent}.wday.rest{background:#f5f5f5;color:#aaa}
+.wday-icon{font-size:16px;margin-bottom:3px}.wday-name{font-size:9px;font-weight:700;margin-bottom:1px}.wday-label{font-size:8px;opacity:.85;line-height:1.3}
+.w-mon{background:var(--purple)}.w-wed{background:var(--coral)}.w-thu{background:var(--green)}.w-sat{background:var(--pink)}.w-sun{background:var(--teal)}
+
+/* DAY HEADER */
+.day-header{border-radius:var(--card-radius);padding:clamp(14px,3vw,20px);color:#fff;display:flex;align-items:center;gap:12px;margin-bottom:16px;flex-wrap:wrap}
+.day-header-icon{font-size:clamp(24px,4vw,34px)}
+.day-header-info h2{font-size:clamp(15px,3vw,20px);font-weight:900;font-family:'Inter',sans-serif}
+.day-header-info p{font-size:11px;opacity:.85;margin-top:2px}
+.day-header-stats{margin-right:auto;display:flex;gap:14px}
+.dstat{text-align:center}
+.dstat-num{font-size:clamp(18px,3vw,22px);font-weight:900;font-family:'Inter',sans-serif}
+.dstat-lbl{font-size:9px;opacity:.8}
+
+/* EXERCISE GRID */
+.ex-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,280px),1fr));gap:var(--gap)}
+
+/* EXERCISE CARD */
+.ex-card{background:#fff;border-radius:var(--card-radius);overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.07);border:1px solid var(--border);cursor:pointer;transition:transform .15s,box-shadow .15s;display:flex;flex-direction:column}
+.ex-card:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,0,0,.13)}
+.ex-card:active{transform:translateY(0)}
+
+/* CARD IMAGE */
+.ex-img-wrap{position:relative;width:100%;padding-top:58%;overflow:hidden;flex-shrink:0}
+.ex-img-bg{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px}
+.ex-img-bg-icon{font-size:36px}
+.ex-img-bg-text{font-size:10px;font-weight:700;color:#fff;opacity:.7;font-family:'Inter',sans-serif;text-align:center;padding:0 10px;line-height:1.3}
+.ex-img-real{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;transition:transform .3s,opacity .3s;opacity:0}
+.ex-img-real.loaded{opacity:1}
+.ex-card:hover .ex-img-real{transform:scale(1.04)}
+.ex-img-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.8) 0%,rgba(0,0,0,.15) 55%,transparent 100%);pointer-events:none}
+.ex-en-title{position:absolute;bottom:9px;right:11px;left:11px;font-family:'Inter',sans-serif;font-size:clamp(11px,1.8vw,14px);font-weight:700;color:#fff;line-height:1.25;text-shadow:0 1px 4px rgba(0,0,0,.6)}
+.ex-num{position:absolute;top:9px;right:9px;width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:#fff}
+.ex-tag{position:absolute;top:9px;left:9px;background:rgba(0,0,0,.6);backdrop-filter:blur(4px);color:#fff;padding:2px 7px;border-radius:5px;font-size:8px;font-weight:700;font-family:'Inter',sans-serif;letter-spacing:.3px}
+
+/* CARD BODY */
+.ex-body{padding:10px 12px;display:flex;flex-direction:column;gap:6px;flex:1}
+.ex-ar-name{font-size:11px;color:#555;line-height:1.4}
+.ex-pills{display:flex;gap:4px;flex-wrap:wrap}
+.pill{padding:2px 7px;border-radius:999px;font-size:10px;font-weight:600;font-family:'Inter',sans-serif}
+.p-s{background:#e0e7ff;color:#3730a3}
+.p-r{background:#fef3c7;color:#92400e}
+.p-rest{background:#d1fae5;color:#065f46}
+.ex-tip{background:#fffbeb;border-right:3px solid #f59e0b;padding:6px 8px;border-radius:0 5px 5px 0;font-size:10px;color:#78350f;line-height:1.5}
+
+/* MODAL */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:1000;align-items:center;justify-content:center;padding:12px;overflow-y:auto}
+.modal-overlay.open{display:flex}
+.modal{background:#fff;border-radius:16px;width:min(520px,100%);max-height:calc(100vh - 24px);overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.35);margin:auto}
+.modal-head{padding:14px 16px 12px;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;justify-content:space-between;gap:10px;position:sticky;top:0;background:#fff;z-index:2}
+.modal-en{font-family:'Inter',sans-serif;font-size:clamp(13px,3vw,16px);font-weight:700;color:var(--dark);line-height:1.3}
+.modal-ar{font-size:11px;color:#888;margin-top:2px}
+.modal-close{width:28px;height:28px;min-width:28px;border-radius:50%;border:1px solid var(--border);background:none;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;color:#666}
+.modal-img-wrap{width:100%;aspect-ratio:16/9;overflow:hidden;background:#1a1a2e;position:relative}
+.modal-img-wrap img{width:100%;height:100%;object-fit:cover}
+.modal-body{padding:14px 16px}
+.modal-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:12px}
+.mstat{background:#f8f8fc;border-radius:9px;padding:9px;text-align:center}
+.mstat-v{font-size:clamp(14px,3vw,18px);font-weight:800;font-family:'Inter',sans-serif}
+.mstat-l{font-size:10px;color:#888;margin-top:2px}
+.modal-sec{margin-bottom:11px}
+.modal-sec h4{font-size:10px;font-weight:700;color:#777;margin-bottom:5px;text-transform:uppercase;letter-spacing:.6px}
+.chips{display:flex;gap:4px;flex-wrap:wrap}
+.chip{background:#f0f2f8;padding:3px 8px;border-radius:20px;font-size:10px;color:#444}
+.modal-desc{font-size:11px;color:#444;line-height:1.8}
+.step{display:flex;gap:7px;margin-bottom:6px;align-items:flex-start}
+.step-n{width:19px;height:19px;min-width:19px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:#fff;margin-top:1px}
+.step-t{font-size:11px;color:#444;line-height:1.6}
+.machine-box{background:#f3e8ff;border:1px solid #d8b4fe;border-radius:8px;padding:9px;margin-top:9px;font-size:10px;color:#4c1d95;line-height:1.6}
+.tip-box{background:#fffbeb;border:1px solid #fde68a;border-radius:8px;padding:9px;margin-top:8px;font-size:11px;color:#78350f;line-height:1.6}
+.yt-btn{display:flex;align-items:center;justify-content:center;gap:7px;width:100%;padding:10px;background:#ff0000;color:#fff;border:none;border-radius:9px;font-size:13px;font-weight:700;cursor:pointer;margin-top:11px;text-decoration:none;font-family:'Cairo',sans-serif}
+
+/* TIPS */
+.tips-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,240px),1fr));gap:12px}
+.tip-card{background:#fff;border-radius:11px;padding:16px;border:1px solid var(--border)}
+.tip-icon{font-size:22px;margin-bottom:7px}
+.tip-title{font-size:13px;font-weight:700;margin-bottom:5px}
+.tip-body{font-size:11px;color:#555;line-height:1.8}
+
+.footer{text-align:center;padding:20px;color:#999;font-size:10px;margin-top:10px}
+</style>
+</head>
+<body>
+
+<nav class="top-nav">
+<div class="nav-inner">
+  <div class="nav-tabs">
+    <button class="nav-tab active" onclick="go('home')">🏠 الرئيسية</button>
+    <button class="nav-tab" onclick="go('mon')">الإثنين</button>
+    <button class="nav-tab" onclick="go('wed')">الأربعاء</button>
+    <button class="nav-tab" onclick="go('thu')">الخميس</button>
+    <button class="nav-tab" onclick="go('sat')">السبت</button>
+    <button class="nav-tab" onclick="go('sun')">الأحد</button>
+    <button class="nav-tab" onclick="go('tips')">نصائح</button>
+  </div>
+  <div class="nav-brand">💪 GYM PROGRAM</div>
+</div>
+</nav>
+
+<div class="page">
+
+<!-- HOME -->
+<div id="tab-home" class="section active">
+  <div class="cover-hero">
+    <div style="font-size:clamp(40px,8vw,56px);margin-bottom:12px">🏋️</div>
+    <h1>Gym Program — Machines & Cable</h1>
+    <h2>5 أيام · إجازة الثلاثاء والجمعة</h2>
+    <div class="cover-divider"></div>
+    <p style="color:#a8b2d8;font-size:clamp(11px,2vw,13px);max-width:440px;margin:0 auto;line-height:1.8">برنامج كامل بالأجهزة والكيبل فقط — أأمن على المفاصل، أثبت في الحركة، ونتائج أسرع.</p>
+    <div class="cover-badges">
+      <span class="cover-badge">🔩 Machines & Cable</span>
+      <span class="cover-badge">📅 ثلاثاء وجمعة إجازة</span>
+      <span class="cover-badge">⏱ 60-70 د/جلسة</span>
+      <span class="cover-badge">🎯 30 تمريناً</span>
+    </div>
+  </div>
+  <div class="stats-row">
+    <div class="stat-card"><div class="stat-num">5</div><div class="stat-lbl">أيام تمرين</div></div>
+    <div class="stat-card"><div class="stat-num">30</div><div class="stat-lbl">تمرين بالأجهزة</div></div>
+    <div class="stat-card"><div class="stat-num">2</div><div class="stat-lbl">أيام إجازة</div></div>
+    <div class="stat-card"><div class="stat-num">6</div><div class="stat-lbl">مجموعات عضلية</div></div>
+  </div>
+  <div class="week-grid">
+    <div class="wday active w-mon clickable" onclick="go('mon')"><div class="wday-icon">💪</div><div class="wday-name">الإثنين</div><div class="wday-label">صدر + ترايسبس</div></div>
+    <div class="wday rest"><div class="wday-icon">😴</div><div class="wday-name">الثلاثاء</div><div class="wday-label">إجازة</div></div>
+    <div class="wday active w-wed clickable" onclick="go('wed')"><div class="wday-icon">🦾</div><div class="wday-name">الأربعاء</div><div class="wday-label">ظهر + بايسبس</div></div>
+    <div class="wday active w-thu clickable" onclick="go('thu')"><div class="wday-icon">🏆</div><div class="wday-name">الخميس</div><div class="wday-label">كتف + منحدر</div></div>
+    <div class="wday rest"><div class="wday-icon">😴</div><div class="wday-name">الجمعة</div><div class="wday-label">إجازة</div></div>
+    <div class="wday active w-sat clickable" onclick="go('sat')"><div class="wday-icon">🦵</div><div class="wday-name">السبت</div><div class="wday-label">أرجل كاملة</div></div>
+    <div class="wday active w-sun clickable" onclick="go('sun')"><div class="wday-icon">🔥</div><div class="wday-name">الأحد</div><div class="wday-label">كور + عضلات</div></div>
+  </div>
+</div>
+
+<!-- MONDAY -->
+<div id="tab-mon" class="section">
+  <div class="day-header" style="background:linear-gradient(135deg,#6d28d9,#7c3aed)">
+    <div class="day-header-icon">💪</div>
+    <div class="day-header-info"><h2>Monday — Chest + Triceps</h2><p>الإثنين · 6 تمارين · 21 سيت</p></div>
+    <div class="day-header-stats"><div class="dstat"><div class="dstat-num">6</div><div class="dstat-lbl">تمارين</div></div><div class="dstat"><div class="dstat-num">21</div><div class="dstat-lbl">سيت</div></div></div>
+  </div>
+  <div class="ex-grid" id="g-mon"></div>
+</div>
+
+<!-- WEDNESDAY -->
+<div id="tab-wed" class="section">
+  <div class="day-header" style="background:linear-gradient(135deg,#b91c1c,#dc2626)">
+    <div class="day-header-icon">🦾</div>
+    <div class="day-header-info"><h2>Wednesday — Back + Biceps</h2><p>الأربعاء · 6 تمارين · 22 سيت</p></div>
+    <div class="day-header-stats"><div class="dstat"><div class="dstat-num">6</div><div class="dstat-lbl">تمارين</div></div><div class="dstat"><div class="dstat-num">22</div><div class="dstat-lbl">سيت</div></div></div>
+  </div>
+  <div class="ex-grid" id="g-wed"></div>
+</div>
+
+<!-- THURSDAY -->
+<div id="tab-thu" class="section">
+  <div class="day-header" style="background:linear-gradient(135deg,#0f766e,#0d9488)">
+    <div class="day-header-icon">🏆</div>
+    <div class="day-header-info"><h2>Thursday — Shoulders + Traps</h2><p>الخميس · 5 تمارين · 17 سيت</p></div>
+    <div class="day-header-stats"><div class="dstat"><div class="dstat-num">5</div><div class="dstat-lbl">تمارين</div></div><div class="dstat"><div class="dstat-num">17</div><div class="dstat-lbl">سيت</div></div></div>
+  </div>
+  <div class="ex-grid" id="g-thu"></div>
+</div>
+
+<!-- SATURDAY -->
+<div id="tab-sat" class="section">
+  <div class="day-header" style="background:linear-gradient(135deg,#15803d,#16a34a)">
+    <div class="day-header-icon">🦵</div>
+    <div class="day-header-info"><h2>Saturday — Full Legs</h2><p>السبت · 6 تمارين · 22 سيت</p></div>
+    <div class="day-header-stats"><div class="dstat"><div class="dstat-num">6</div><div class="dstat-lbl">تمارين</div></div><div class="dstat"><div class="dstat-num">22</div><div class="dstat-lbl">سيت</div></div></div>
+  </div>
+  <div class="ex-grid" id="g-sat"></div>
+</div>
+
+<!-- SUNDAY -->
+<div id="tab-sun" class="section">
+  <div class="day-header" style="background:linear-gradient(135deg,#a21caf,#c026d3)">
+    <div class="day-header-icon">🔥</div>
+    <div class="day-header-info"><h2>Sunday — Core + Accessories</h2><p>الأحد · 7 تمارين · 23 سيت</p></div>
+    <div class="day-header-stats"><div class="dstat"><div class="dstat-num">7</div><div class="dstat-lbl">تمارين</div></div><div class="dstat"><div class="dstat-num">23</div><div class="dstat-lbl">سيت</div></div></div>
+  </div>
+  <div class="ex-grid" id="g-sun"></div>
+</div>
+
+<!-- TIPS -->
+<div id="tab-tips" class="section">
+  <h2 style="font-size:clamp(16px,3vw,20px);font-weight:800;margin-bottom:5px">نصائح النجاح والتعافي</h2>
+  <p style="color:#888;margin-bottom:16px;font-size:12px">اتبع هذه النصائح لنتائج أسرع وأفضل</p>
+  <div class="tips-grid">
+    <div class="tip-card"><div class="tip-icon">📈</div><div class="tip-title">Progressive Overload</div><div class="tip-body">زد الوزن أو التكرار كل أسبوعين. الأجهزة سهّلت التتبع — كل شيء أرقام واضحة.</div></div>
+    <div class="tip-card"><div class="tip-icon">🥩</div><div class="tip-title">البروتين الكافي</div><div class="tip-body">1.8–2.2 جرام بروتين لكل كيلو يومياً. الوجبة بعد التمرين مباشرة الأهم.</div></div>
+    <div class="tip-card"><div class="tip-icon">😴</div><div class="tip-title">يومَي الإجازة</div><div class="tip-body">الثلاثاء والجمعة للتعافي الكامل. 7-9 ساعات نوم. مشي خفيف فقط — لا جيم.</div></div>
+    <div class="tip-card"><div class="tip-icon">🔩</div><div class="tip-title">ميزة الأجهزة</div><div class="tip-body">الأجهزة تُثبّت مسار الحركة تلقائياً. ركّز على الإحساس بالعضلة — هذا هو الفرق.</div></div>
+    <div class="tip-card"><div class="tip-icon">💧</div><div class="tip-title">الترطيب</div><div class="tip-body">3 لتر ماء يومياً. الجفاف يقلل القوة 10-20%. اشرب قبل وأثناء وبعد التمرين.</div></div>
+    <div class="tip-card"><div class="tip-icon">📊</div><div class="tip-title">سجّل كل شيء</div><div class="tip-body">سجّل الوزن والتكرار في كل جلسة. الهدف: تقدم مستمر كل أسبوعين على الأقل.</div></div>
+  </div>
+  <div style="background:var(--dark);border-radius:13px;padding:clamp(14px,3vw,20px);color:#fff;text-align:center;margin-top:16px">
+    <div style="font-size:clamp(13px,2.5vw,16px);font-weight:800;margin-bottom:8px;font-family:'Inter',sans-serif">Weekly Schedule</div>
+    <div style="font-size:clamp(10px,2vw,12px);color:#a8b2d8;line-height:2">
+      الإثنين: صدر · <span style="color:#555">الثلاثاء: راحة</span> · الأربعاء: ظهر · الخميس: كتف · <span style="color:#555">الجمعة: راحة</span> · السبت: أرجل · الأحد: كور
+    </div>
+  </div>
+</div>
+
+</div><!-- /page -->
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal" onclick="closeModal(event)">
+  <div class="modal">
+    <div class="modal-head">
+      <div><div class="modal-en" id="m-en"></div><div class="modal-ar" id="m-ar"></div></div>
+      <button class="modal-close" onclick="document.getElementById('modal').classList.remove('open')">✕</button>
+    </div>
+    <div class="modal-img-wrap"><img id="m-img" src="" alt=""/></div>
+    <div class="modal-body">
+      <div class="modal-stats" id="m-stats"></div>
+      <div class="modal-sec"><h4>Target Muscles</h4><div class="chips" id="m-muscles"></div></div>
+      <div class="modal-sec"><h4>About</h4><div class="modal-desc" id="m-desc"></div></div>
+      <div class="modal-sec"><h4>How To</h4><div id="m-steps"></div></div>
+      <div class="machine-box" id="m-machine"></div>
+      <div class="tip-box" id="m-tip"></div>
+      <a id="m-yt" href="#" target="_blank" class="yt-btn">▶ شاهد الفيديو التعليمي على يوتيوب</a>
+    </div>
+  </div>
+</div>
+
+<div class="footer">برنامج الجيم · أجهزة وكيبل · إثنين / أربعاء / خميس / سبت / أحد · Claude AI</div>
+
+<script>
+const ICONS={'Smith Machine':'🏋️','Cable Machine':'🔗','Plate-Loaded':'⚖️','Selectorized':'🎛️','Calf Machine':'🦵','Captain\'s Chair':'💪','Back Extension':'🔙','Bodyweight':'🧘','Hip Machine':'🍑'};
+
+const DATA={
+mon:[
+{en:"Smith Machine Flat Bench Press",ar:"سميث ماشين — صدر مستوي",muscle:"صدر كامل + ترايسبس + كتف أمامي",tag:"Smith Machine",sets:4,reps:"8-10",rest:"90s",color:"#7c3aed",
+img:"https://fitnessvolt.com/wp-content/uploads/2023/02/Smith-Machine-Bench-Press.jpg",
+yt:"https://www.youtube.com/results?search_query=smith+machine+bench+press+tutorial",
+muscles:["Chest (Full)","Triceps","Anterior Deltoid"],
+desc:"بديل ممتاز للبنش بريس الحر. مسار الحركة ثابت تلقائياً مما يحمي مفصل الكتف ويتيح رفع أوزان أثقل بأمان.",
+steps:["اضبط المقعد تحت البار على مستوى صدرك","أمسك البار بعرض أوسع من الكتفين وحرّر الأقفال","أنزل البار ببطء للصدر (3 ثوانٍ) ثم ارفع بقوة","الظهر ملامس للمقعد طوال الوقت","دوّر البار للخلف لإعادة تثبيته"],
+machine:"⚙️ دوّر البار للأمام لتحريره وللخلف لتثبيته. يمكنك الإيقاف في أي لحظة.",
+tip:"💡 لا تحتاج مساعداً — الكام الأمان يثبّت البار في أي وقت."},
+
+{en:"Smith Machine Incline Press",ar:"سميث ماشين — صدر مائل",muscle:"صدر علوي + كتف أمامي",tag:"Smith Machine",sets:4,reps:"10-12",rest:"90s",color:"#7c3aed",
+img:"https://fitnessvolt.com/wp-content/uploads/2022/09/incline-smith-machine-press.jpg",
+yt:"https://www.youtube.com/results?search_query=smith+machine+incline+press",
+muscles:["Upper Chest","Anterior Deltoid","Triceps"],
+desc:"يستهدف الصدر العلوي ويعطيه بروزاً مميزاً. السميث يثبّت المسار فتركّز على ضغط الصدر العلوي.",
+steps:["اضبط المقعد على زاوية 30-35 درجة","حرّك المقعد حتى يكون البار فوق أعلى الصدر","أنزل البار لأعلى الصدر ببطء","ارفع بقوة مع ضغط الصدر العلوي في القمة","الأوزان أخف 10-15% عن المستوي"],
+machine:"⚙️ تجنب الزاوية 45° أو أكثر — يحوّل الحركة لتمرين كتف.",
+tip:"💡 30-35 درجة هي الزاوية المثالية للصدر العلوي."},
+
+{en:"Cable Crossover",ar:"كيبل كروسوفر — ضم صدر",muscle:"صدر داخلي — توتر مستمر",tag:"Cable Machine",sets:3,reps:"12-15",rest:"60s",color:"#7c3aed",
+img:"https://fitnessvolt.com/wp-content/uploads/2022/09/cable-crossover.jpg",
+yt:"https://www.youtube.com/results?search_query=cable+crossover+chest+fly",
+muscles:["Inner Chest","Pectoralis Major"],
+desc:"الكيبل يوفر توتراً مستمراً على الصدر في كل مراحل الحركة — ميزة لا يوفرها الدمبل أو البار.",
+steps:["اضبط البكرتين على مستوى الكتف","قف في المنتصف وقدّم رجلاً للأمام","افتح ذراعيك للجانب مع انحناء خفيف في الكوع","اشدّ المقابض للأمام بحركة احتضان","تحكّم في العودة ببطء"],
+machine:"⚙️ بكرة عالية = صدر سفلي. بكرة متوسطة = صدر كامل. بكرة منخفضة = صدر علوي.",
+tip:"💡 اضغط في نقطة التقاطع ثانية لأقصى انقباض."},
+
+{en:"Chest Press Machine",ar:"جهاز ضغط الصدر",muscle:"صدر كامل + ترايسبس",tag:"Plate-Loaded",sets:3,reps:"10-12",rest:"75s",color:"#7c3aed",
+img:"https://fitnessvolt.com/wp-content/uploads/2023/06/machine-chest-press.jpg",
+yt:"https://www.youtube.com/results?search_query=chest+press+machine+form",
+muscles:["Pectoralis Major","Triceps"],
+desc:"الجهاز يضمن مسار حركة مثالي. مناسب للتركيز الكامل على الإحساس بالعضلة.",
+steps:["اضبط الكرسي بحيث تكون المقابض على مستوى وسط الصدر","ظهرك مستند للمقعد بالكامل","ادفع للأمام حتى تمدد الذراعين (دون قفل الكوع)","أمسك ثانية في القمة","ارجع ببطء"],
+machine:"⚙️ المقابض يجب أن تكون على مستوى وسط الصدر تماماً.",
+tip:"💡 ركّز على الإحساس بضغط الصدر — وليس دفع المقابض."},
+
+{en:"Cable Tricep Rope Pushdown",ar:"كيبل ترايسبس — حبل",muscle:"ترايسبس كامل — ثلاثة رؤوس",tag:"Cable Machine",sets:3,reps:"12-15",rest:"60s",color:"#7c3aed",
+img:"https://fitnessvolt.com/wp-content/uploads/2021/07/Triceps-Pushdown-Rope.jpg",
+yt:"https://www.youtube.com/results?search_query=cable+tricep+rope+pushdown",
+muscles:["Triceps (All 3 Heads)"],
+desc:"الحبل أفضل من البار لأنه يتيح فتح اليدين في الأسفل مما يزيد تمدد الرأس الطويل للترايسبس.",
+steps:["أمسك الحبل من طرفيه مع راحة اليد للداخل","الكوع ثابت بجانب الجذع — لا يتحرك أبداً","ادفع الحبل للأسفل وافتح طرفيه للخارج في القمة","اضغط الترايسبس لثانية في الأسفل","ارجع ببطء حتى 90° في الكوع"],
+machine:"⚙️ استخدم مقبض الحبل (Rope) للمدى الأوسع.",
+tip:"💡 فتح الحبل للخارج في الأسفل يشغّل الرأس الجانبي أكثر."},
+
+{en:"Overhead Cable Tricep Extension",ar:"كيبل ترايسبس علوي",muscle:"الرأس الطويل للترايسبس",tag:"Cable Machine",sets:3,reps:"12-15",rest:"60s",color:"#7c3aed",
+img:"https://fitnessvolt.com/wp-content/uploads/2022/04/overhead-cable-tricep-extension.jpg",
+yt:"https://www.youtube.com/results?search_query=overhead+cable+tricep+extension",
+muscles:["Triceps Long Head"],
+desc:"يستهدف الرأس الطويل للترايسبس — أكبر رأس — ويُحسّن شكل الذراع من الخلف.",
+steps:["اضبط الكيبل على أدنى مستوى","أمسك المقبض خلف رأسك بكلتا اليدين","الكوعان يشيران للسماء ومثبّتان","امدد الذراعين للأعلى بالكوع فقط","أنزل ببطء حتى الشعور بتمدد خلف الذراع"],
+machine:"⚙️ الحبل يعطي نطاق حركة أوسع من المقبض المستقيم.",
+tip:"💡 الرأس الطويل يُفعَّل فقط مع ذراع مرفوعة — لهذا هذا التمرين ضروري."}
+],
+wed:[
+{en:"Wide Grip Lat Pulldown",ar:"لات بول داون عريض",muscle:"الظهر العريض — شكل V",tag:"Cable Machine",sets:4,reps:"10-12",rest:"75s",color:"#dc2626",
+img:"https://fitnessvolt.com/wp-content/uploads/2022/09/wide-grip-lat-pulldown.jpg",
+yt:"https://www.youtube.com/results?search_query=wide+grip+lat+pulldown+tutorial",
+muscles:["Latissimus Dorsi","Biceps","Rear Deltoid"],
+desc:"أفضل تمرين لعرض الظهر وإعطائه شكل V المميز.",
+steps:["اجلس وثبّت الفخذين تحت وسادة الجهاز","أمسك البار بعرض أوسع من الكتفين بـ15سم","أميل للخلف 15 درجة واسحب البار لأعلى الصدر","اضغط الكتفين للخلف والأسفل في القمة","ارجع ببطء حتى تمدد كامل"],
+machine:"⚙️ جرّب أيضاً القبضة الضيقة لتنويع الاستهداف.",
+tip:"💡 فكّر 'إدخال كوعيك في جيبك' — يُفعّل اللاتيسيموس أكثر."},
+
+{en:"Seated Cable Row",ar:"روينج كيبل جلوس",muscle:"ظهر أوسط + معيّن + منحدر",tag:"Cable Machine",sets:4,reps:"10-12",rest:"75s",color:"#dc2626",
+img:"https://fitnessvolt.com/wp-content/uploads/2022/09/seated-cable-row.jpg",
+yt:"https://www.youtube.com/results?search_query=seated+cable+row+tutorial",
+muscles:["Middle Back","Rhomboids","Trapezius","Biceps"],
+desc:"يبني سماكة الظهر والعمق. المقعد يحمي الظهر السفلي ويتيح التركيز الكامل.",
+steps:["اجلس والظهر مستقيم","ضع قدميك على المنصة والركبتان منحنيتان","اسحب المقبض نحو البطن السفلي","اضغط كتفيك للخلف والأسفل في القمة","أنزل ببطء مع تمدد خفيف للأمام"],
+machine:"⚙️ قبضة ضيقة = ظهر داخلي أكثر. عريضة = ظهر خارجي أكثر.",
+tip:"💡 لا تتأرجح بجسمك — إذا تأرجحت فالوزن ثقيل."},
+
+{en:"Chest Supported Row Machine",ar:"روينج الجهاز المائل",muscle:"ظهر أوسط + كتف خلفي",tag:"Plate-Loaded",sets:3,reps:"12-15",rest:"60s",color:"#dc2626",
+img:"https://fitnessvolt.com/wp-content/uploads/2023/08/chest-supported-row.jpg",
+yt:"https://www.youtube.com/results?search_query=chest+supported+row+machine",
+muscles:["Middle Back","Rear Deltoid","Rhomboids"],
+desc:"الجهاز يدعم الصدر — لا زخمة. نقاء الحركة 100% وكل الجهد يذهب للظهر.",
+steps:["أثبّت الصدر على الوسادة الأمامية","أمسك المقابض والكتفان مرتخيتان للأمام","اسحب للخلف مع ضغط الكتفين بقوة","أمسك في القمة ثانية","أنزل ببطء حتى تمدد كامل"],
+machine:"⚙️ هذا الجهاز يلغي الزخمة تماماً — مثالي لعزل الظهر الأوسط.",
+tip:"💡 إذا لم يكن متاحاً: Incline Bench + دمبل كبديل."},
+
+{en:"Underhand Lat Pulldown",ar:"لات بول داون قبضة عكسية",muscle:"ظهر عريض سفلي + بايسبس",tag:"Cable Machine",sets:3,reps:"12-15",rest:"60s",color:"#dc2626",
+img:"https://fitnessvolt.com/wp-content/uploads/2022/09/reverse-grip-lat-pulldown.jpg",
+yt:"https://www.youtube.com/results?search_query=underhand+lat+pulldown",
+muscles:["Lower Lats","Biceps"],
+desc:"القبضة العكسية تشغّل الجزء السفلي من اللاتيسيموس أكثر والبايسبس بشكل أقوى.",
+steps:["أمسك البار بقبضة عكسية (راحة اليد للأعلى) بعرض الكتفين","اجلس وثبّت الفخذين","اسحب البار للصدر مع إمالة خفيفة للخلف","اضغط في القمة مع تقريب الكوعين","ارجع ببطء"],
+machine:"⚙️ نفس جهاز اللات بول داون — فقط غيّر اتجاه القبضة.",
+tip:"💡 القبضة العكسية تعطي انقباضاً أقوى في القمة."},
+
+{en:"Cable Bicep Curl",ar:"كيبل كيرل بايسبس",muscle:"بايسبس + براكياليس",tag:"Cable Machine",sets:3,reps:"10-12",rest:"60s",color:"#dc2626",
+img:"https://fitnessvolt.com/wp-content/uploads/2021/03/Cable-Bicep-Curl.jpg",
+yt:"https://www.youtube.com/results?search_query=cable+bicep+curl+tutorial",
+muscles:["Biceps Brachii","Brachialis"],
+desc:"الكيبل يوفر توتراً مستمراً من الأسفل للأعلى — أفضل من البار الحر.",
+steps:["اضبط الكيبل على أدنى مستوى وأمسك البار","قف مستقيماً والكوعان ثابتان بجانب الجسم","ارفع البار ببطء حتى مستوى الكتف","اضغط في القمة لثانية","أنزل ببطء 3 ثوانٍ"],
+machine:"⚙️ الكيبل السفلي يوفر مقاومة في الوضعية السفلية — الدمبل لا يفعل ذلك.",
+tip:"💡 الإنزال البطيء (3 ثوانٍ) يبني البايسبس أسرع من الرفع السريع."},
+
+{en:"Cable Hammer Curl (Rope)",ar:"كيبل هامر كيرل — حبل",muscle:"براكياليس + بايسبس جانبي",tag:"Cable Machine",sets:3,reps:"10-12",rest:"60s",color:"#dc2626",
+img:"https://fitnessvolt.com/wp-content/uploads/2022/07/rope-hammer-curl.jpg",
+yt:"https://www.youtube.com/results?search_query=cable+hammer+curl+rope",
+muscles:["Brachialis","Biceps Lateral Head","Forearm"],
+desc:"القبضة العمودية تستهدف البراكياليس الذي يرفع البايسبس ويعطي الذراع عرضاً أكبر.",
+steps:["أمسك الحبل من طرفيه بقبضة عمودية","الكوعان ثابتان بجانب الجسم","ارفع ببطء والقبضة تبقى عمودية","اضغط في القمة ثانية","أنزل ببطء"],
+machine:"⚙️ نفس مقبض الحبل المستخدم في ترايسبس.",
+tip:"💡 أي دوران في القبضة يحوّل التمرين لكيرل عادي — حافظ على العمودية."}
+],
+thu:[
+{en:"Machine Shoulder Press",ar:"جهاز ضغط الكتف",muscle:"كتف كامل + ترايسبس + منحدر",tag:"Plate-Loaded",sets:4,reps:"10-12",rest:"90s",color:"#0d9488",
+img:"https://fitnessvolt.com/wp-content/uploads/2023/07/machine-shoulder-press.jpg",
+yt:"https://www.youtube.com/results?search_query=machine+shoulder+press+tutorial",
+muscles:["Anterior Deltoid","Lateral Deltoid","Triceps","Upper Traps"],
+desc:"الجهاز يضمن مسار حركة آمن للكتف ويتيح التركيز الكامل على العضلة.",
+steps:["اضبط المقعد بحيث تكون المقابض على مستوى الكتف","الظهر مستند للمقعد بالكامل","ادفع للأعلى حتى تمدد الذراعين (دون قفل الكوع)","أمسك ثانية في القمة","أنزل ببطء حتى مستوى الأذن"],
+machine:"⚙️ المقابض يجب أن تكون على مستوى الأذن تماماً.",
+tip:"💡 لا تقفل الكوع في القمة — يحافظ على التوتر ويحمي المفصل."},
+
+{en:"Cable Lateral Raise",ar:"كيبل رفعة جانبية",muscle:"كتف جانبي — أوسع جزء",tag:"Cable Machine",sets:4,reps:"15-20",rest:"45s",color:"#0d9488",
+img:"https://fitnessvolt.com/wp-content/uploads/2022/09/cable-lateral-raise.jpg",
+yt:"https://www.youtube.com/results?search_query=cable+lateral+raise+tutorial",
+muscles:["Lateral Deltoid (Medial Head)"],
+desc:"أفضل من الدمبل لأن الكيبل يوفر مقاومة في الوضعية السفلية.",
+steps:["قف جانباً لجهاز الكيبل السفلي","أمسك الكيبل باليد البعيدة (متقاطعة أمام الجسم)","ارفع الذراع للجانب حتى مستوى الكتف","تحكّم في الإنزال ببطء — الجزء الأهم","كرر ثم بدّل الجانب"],
+machine:"⚙️ اضبط الكيبل على أدنى مستوى. استخدم مقبض D-Ring الصغير.",
+tip:"💡 الإنزال البطيء في الكيبل يعطي 30% استهداف أكثر من الدمبل."},
+
+{en:"Cable Front Raise",ar:"كيبل رفعة أمامية",muscle:"كتف أمامي",tag:"Cable Machine",sets:3,reps:"12-15",rest:"60s",color:"#0d9488",
+img:"https://fitnessvolt.com/wp-content/uploads/2022/09/cable-front-raise.jpg",
+yt:"https://www.youtube.com/results?search_query=cable+front+raise+shoulder",
+muscles:["Anterior Deltoid"],
+desc:"الكيبل يضمن توتراً مستمراً على الكتف الأمامي طوال مسار الحركة.",
+steps:["قف أمام الكيبل السفلي وأمسك المقبض","ارفع الذراع للأمام حتى مستوى الكتف","الذراع شبه مستقيمة طوال الحركة","تحكّم في الإنزال ببطء","كرر ثم بدّل الجانب"],
+machine:"⚙️ الحبل يتيح رفع اليدين معاً. D-Ring لليد الواحدة.",
+tip:"💡 لا تهزّ جسمك للخلف — إذا احتجت فالوزن ثقيل."},
+
+{en:"Cable Face Pull",ar:"فيس بول كيبل",muscle:"كتف خلفي + صحة المفصل",tag:"Cable Machine",sets:3,reps:"15-20",rest:"45s",color:"#0d9488",
+img:"https://fitnessvolt.com/wp-content/uploads/2022/09/cable-face-pull.jpg",
+yt:"https://www.youtube.com/results?search_query=cable+face+pull+tutorial",
+muscles:["Rear Deltoid","Rotator Cuff","Mid Traps"],
+desc:"تمرين وقائي لا يمكن الاستغناء عنه أبداً. يصحح الوضعية ويحمي الكتف على المدى البعيد.",
+steps:["اضبط الكيبل على مستوى العين","أمسك الحبل بكلتا يديك","اشدّ نحو وجهك مع فتح الكوعين للجانب","في القمة: أيديك بجانب الأذنين والكوعان جانباً","أرجع ببطء مع مقاومة"],
+machine:"⚙️ الوزن خفيف — هدفك الإحساس وليس القوة.",
+tip:"💡 من يتجاهل هذا التمرين يصاب بالكتف بعد سنوات."},
+
+{en:"Cable Shrugs",ar:"شراغز على الكيبل",muscle:"المنحدر العلوي (Trapezius)",tag:"Cable Machine",sets:3,reps:"12-15",rest:"60s",color:"#0d9488",
+img:"https://fitnessvolt.com/wp-content/uploads/2022/09/cable-shrug.jpg",
+yt:"https://www.youtube.com/results?search_query=cable+shrugs+trap+tutorial",
+muscles:["Upper Trapezius"],
+desc:"الكيبل يبقي التوتر ثابتاً في كل وضعية — أفضل من الدمبل.",
+steps:["أمسك الكيبلين السفليين","قف مستقيماً والذراعان مستقيمتان","ارفع الكتفين للأعلى نحو الأذنين","أمسك في القمة لثانيتين","أنزل ببطء حتى تمدد كامل"],
+machine:"⚙️ كيبل سفلي مزدوج أو جهاز Shrug مخصص.",
+tip:"💡 الحركة عمودية فقط — أي تدوير يضرّ المفصل."}
+],
+sat:[
+{en:"Leg Press Machine (45°)",ar:"ليج بريس — 45 درجة",muscle:"رباعي + أرداف + هامسترينج",tag:"Plate-Loaded",sets:4,reps:"10-12",rest:"90s",color:"#16a34a",
+img:"https://fitnessvolt.com/wp-content/uploads/2023/06/45-degree-leg-press.jpg",
+yt:"https://www.youtube.com/results?search_query=leg+press+45+degree+tutorial",
+muscles:["Quadriceps","Glutes","Hamstrings"],
+desc:"الملك الآمن لتمارين الأرجل. يحمل أوزاناً ضخمة مع حماية تامة للظهر.",
+steps:["الظهر مستند بالكامل للمقعد","ضع قدميك بعرض الكتفين على المنصة","حرّر الأقفال وأنزل ببطء حتى 90°","ادفع المنصة بقوة — بدون قفل الركبة في القمة","أعد تثبيت الأقفال عند الانتهاء"],
+machine:"⚙️ قدمين عالٍ = أرداف أكثر. قدمين منخفض = رباعي أكثر.",
+tip:"💡 لا تقفل الركبة في القمة أبداً."},
+
+{en:"Leg Extension Machine",ar:"ليج إكستنشن",muscle:"رباعي الفخذ — عزل كامل",tag:"Selectorized",sets:3,reps:"12-15",rest:"60s",color:"#16a34a",
+img:"https://fitnessvolt.com/wp-content/uploads/2023/06/leg-extension.jpg",
+yt:"https://www.youtube.com/results?search_query=leg+extension+machine+tutorial",
+muscles:["Quadriceps (All 4 Heads)"],
+desc:"العزل المثالي لرباعي الفخذ. يضيف حجماً وتعريفاً للجزء الأمامي.",
+steps:["اضبط وسادة الجهاز لتكون أعلى الكاحل","الظهر مستند والقدمان متعامدتان","امدد الأرجل للأمام ببطء","اضغط في القمة لثانيتين","أنزل ببطء — لا تترك الوزن يسقط"],
+machine:"⚙️ اضبط وسادة الظهر حتى تكون 90° في الركبة عند البداية.",
+tip:"💡 إذا شعرت بألم في الركبة خفف الوزن أو قلل مدى الحركة."},
+
+{en:"Lying Leg Curl Machine",ar:"ليج كيرل — ثني الأرجل",muscle:"هامسترينج كامل",tag:"Selectorized",sets:3,reps:"12-15",rest:"60s",color:"#16a34a",
+img:"https://fitnessvolt.com/wp-content/uploads/2023/06/lying-leg-curl.jpg",
+yt:"https://www.youtube.com/results?search_query=lying+leg+curl+machine",
+muscles:["Hamstrings"],
+desc:"ضروري لتوازن قوة الأرجل ومنع إصابات الركبة.",
+steps:["استلقِ على البطن والوسادة أعلى الكعبين","الجسم مستقيم والأرداف على المقعد","اثنِ الركبتين واسحب نحو الأرداف","اضغط الهامسترينج في القمة لثانية","أنزل ببطء حتى شبه تمدد كامل"],
+machine:"⚙️ الجهاز الجلوس يعطي تمدداً أكبر للهامسترينج.",
+tip:"💡 التحكم في الإنزال أهم من الرفع — 3 ثوانٍ للأسفل."},
+
+{en:"Hip Abductor Machine",ar:"جهاز فتح الأرجل",muscle:"أرداف جانبية + ثبات الورك",tag:"Selectorized",sets:3,reps:"15-20",rest:"45s",color:"#16a34a",
+img:"https://fitnessvolt.com/wp-content/uploads/2023/06/hip-abductor-machine.jpg",
+yt:"https://www.youtube.com/results?search_query=hip+abductor+machine+tutorial",
+muscles:["Gluteus Medius","Hip Abductors"],
+desc:"يستهدف الجزء الجانبي من الأرداف الذي لا تصله التمارين الأخرى.",
+steps:["اجلس والظهر مستند","ضع الأرجل على الوسائد الجانبية","افتح الأرجل للخارج بقوة","أمسك في القمة ثانية","أغلق ببطء"],
+machine:"⚙️ ضبط اتساع الوضعية الابتدائية مهم — ابدأ من وضع مريح.",
+tip:"💡 قارنه بجهاز الأداكتور (إغلاق الأرجل) لتطوير الفخذ الداخلي."},
+
+{en:"Hip Thrust Machine",ar:"هيب ثرست — دفع الأرداف",muscle:"أرداف كاملة + هامسترينج",tag:"Hip Machine",sets:4,reps:"15-20",rest:"60s",color:"#16a34a",
+img:"https://fitnessvolt.com/wp-content/uploads/2023/06/hip-thrust.jpg",
+yt:"https://www.youtube.com/results?search_query=hip+thrust+machine+tutorial",
+muscles:["Gluteus Maximus","Hamstrings"],
+desc:"أفضل تمرين مباشر للأرداف. الجهاز يوفر مسار ثابت وآمن.",
+steps:["ارتكز على المقعد أو الجهاز","ضع الحزام أو الوسادة على الفخذين","ادفع الأرداف للأعلى حتى يصبح الجسم خطاً مستقيماً","اضغط الأرداف بقوة في القمة لثانيتين","أنزل ببطء"],
+machine:"⚙️ إن لم يكن الجهاز متاحاً: كيبل سفلي مع حزام حول الورك.",
+tip:"💡 اضغط الأرداف كأنك تسحق شيئاً بينهما — يضاعف الانقباض."},
+
+{en:"Standing Calf Raise Machine",ar:"كاف ريز — ربلة الساق",muscle:"Gastrocnemius + Soleus",tag:"Calf Machine",sets:4,reps:"15-20",rest:"45s",color:"#16a34a",
+img:"https://fitnessvolt.com/wp-content/uploads/2023/06/standing-calf-raise.jpg",
+yt:"https://www.youtube.com/results?search_query=standing+calf+raise+machine",
+muscles:["Gastrocnemius","Soleus"],
+desc:"ربلة الساق بطيئة الاستجابة وتحتاج تكراراً عالياً وتمدداً كاملاً.",
+steps:["ضع الكتفين تحت الوسائد ومقدمة القدمين على الحافة","أنزل الكعبين للأسفل قدر الإمكان (تمدد كامل)","ارفع للأعلى على الأصابع بالكامل","أمسك في القمة ثانية","أنزل ببطء 3 ثوانٍ"],
+machine:"⚙️ واقفاً = Gastrocnemius. جالساً (ركبة مثنية) = Soleus. افعل كليهما.",
+tip:"💡 المدى الكامل (أسفل كثيراً + أعلى كثيراً) هو سر تطوير ربلة الساق."}
+],
+sun:[
+{en:"Cable Crunch",ar:"كيبل كرانش — بطن",muscle:"بطن علوي — عزل بمقاومة",tag:"Cable Machine",sets:4,reps:"15-20",rest:"45s",color:"#c026d3",
+img:"https://fitnessvolt.com/wp-content/uploads/2021/07/cable-crunch.jpg",
+yt:"https://www.youtube.com/results?search_query=cable+crunch+abs+tutorial",
+muscles:["Rectus Abdominis (Upper)","Core"],
+desc:"أفضل من الكرانش الأرضي لأن الكيبل يوفر مقاومة قابلة للزيادة.",
+steps:["اركع أمام الكيبل العلوي وامسك الحبل خلف رأسك","الأوراك ثابتة على الكعبين طوال الوقت","انحنِ للأسفل بالكور فقط","اضغط في القمة السفلية لثانيتين","ارجع ببطء"],
+machine:"⚙️ استخدم حبل الترايسبس. ابدأ بوزن خفيف وزد تدريجياً.",
+tip:"💡 الوزن الخفيف مع الإحساس بالبطن أفضل من الوزن الثقيل."},
+
+{en:"Ab Crunch Machine",ar:"جهاز الكرانش الآلي",muscle:"بطن كامل بمقاومة",tag:"Selectorized",sets:3,reps:"15-20",rest:"45s",color:"#c026d3",
+img:"https://fitnessvolt.com/wp-content/uploads/2023/08/ab-machine-crunch.jpg",
+yt:"https://www.youtube.com/results?search_query=ab+crunch+machine+tutorial",
+muscles:["Rectus Abdominis","Core"],
+desc:"الجهاز يحدد مسار الحركة بدقة ويتيح زيادة الوزن تدريجياً.",
+steps:["اجلس واضبط مستوى المقابض","يداك على المقابض والقدمان تحت الوسادة","انحنِ للأمام ببطء مع ضغط البطن","أمسك في القمة ثانية","ارجع ببطء — الإنزال الأهم"],
+machine:"⚙️ ضبط مستوى المقابض يغير الجزء المستهدف من البطن.",
+tip:"💡 البطن تحتاج مقاومة لتنمو — مثلها مثل أي عضلة أخرى."},
+
+{en:"Captain's Chair Knee Raise",ar:"رفع الركبتين",muscle:"بطن سفلي + هيب فليكسر",tag:"Captain's Chair",sets:3,reps:"12-15",rest:"45s",color:"#c026d3",
+img:"https://fitnessvolt.com/wp-content/uploads/2022/05/hanging-knee-raise.jpg",
+yt:"https://www.youtube.com/results?search_query=captains+chair+knee+raise",
+muscles:["Lower Abs","Hip Flexors"],
+desc:"يستهدف الجزء السفلي من البطن الذي يصعب إصابته بالكرانش.",
+steps:["ضع ذراعيك على وسائد الجهاز وجسمك معلّق","ارفع الركبتين ببطء نحو الصدر","اضغط البطن في القمة ثانية","أنزل ببطء — الجزء الأهم","المتقدمون: ارفع الأرجل مستقيمة"],
+machine:"⚙️ أريح وأأمن من التعلق بالبار.",
+tip:"💡 لا تتأرجح بجسمك. تأرجحت؟ اثنِ الركبتين."},
+
+{en:"Cable Wood Chop",ar:"كيبل وود تشوب — خاصرة",muscle:"بطن مائل + كور دوراني",tag:"Cable Machine",sets:3,reps:"12-15 per side",rest:"45s",color:"#c026d3",
+img:"https://fitnessvolt.com/wp-content/uploads/2022/09/cable-wood-chop.jpg",
+yt:"https://www.youtube.com/results?search_query=cable+wood+chop+oblique",
+muscles:["Obliques","Rotational Core"],
+desc:"يستهدف الخاصرة بشكل مباشر ويُشكّل الخصر ويقوي ثبات العمود الفقري.",
+steps:["اضبط الكيبل على مستوى الكتف أو أعلى","قف جانباً وأمسك المقبض بكلتا يديك","دوّر الجذع وأنزل المقبض بقطر نحو الركبة المعاكسة","تحكّم في العودة ببطء","كرر ثم بدّل الجانب"],
+machine:"⚙️ High-to-Low = مائل علوي. Low-to-High = مائل سفلي.",
+tip:"💡 الدوران من الكتف — الورك يبقى في مكانه."},
+
+{en:"Cable Hip Abduction",ar:"كيبل هيب أبدكشن",muscle:"أرداف جانبية + ثبات الورك",tag:"Cable Machine",sets:3,reps:"15-20 per side",rest:"45s",color:"#c026d3",
+img:"https://fitnessvolt.com/wp-content/uploads/2022/09/cable-hip-abduction.jpg",
+yt:"https://www.youtube.com/results?search_query=cable+hip+abduction+glute",
+muscles:["Gluteus Medius","Hip Stabilizers"],
+desc:"يستهدف الجزء الجانبي من الأرداف الذي يُحسّن شكل الورك.",
+steps:["ربط شريط الكاحل بالكيبل السفلي","قف جانباً والإمساك بالجهاز للاتزان","افتح الرجل المربوطة للجانب","أمسك ثانية في القمة","أنزل ببطء"],
+machine:"⚙️ استخدم شريط الكاحل القابل للتعديل.",
+tip:"💡 التحكم في الإنزال أهم من رفع الرجل عالياً."},
+
+{en:"Back Extension Machine",ar:"جهاز باك إكستنشن",muscle:"أسفل الظهر + أرداف",tag:"Back Extension",sets:3,reps:"15-20",rest:"45s",color:"#c026d3",
+img:"https://fitnessvolt.com/wp-content/uploads/2023/07/back-extension-45-degree.jpg",
+yt:"https://www.youtube.com/results?search_query=back+extension+45+degree+machine",
+muscles:["Erector Spinae","Glutes","Hamstrings"],
+desc:"يقوي أسفل الظهر المهمَل. ضروري لتجنب الآلام وتحسين أداء كل التمارين الأخرى.",
+steps:["ثبّت الأوراك على الوسادة وقدميك على القاعدة","اليدان خلف الرأس أو على الصدر","انحنِ للأسفل حتى يصبح الجذع موازياً للأرض","ارفع حتى يصبح الجسم خطاً مستقيماً","لا تمدد فوق مستوى الجسم المستقيم"],
+machine:"⚙️ يمكن حمل وزن على الصدر لزيادة الصعوبة.",
+tip:"💡 مهم جداً لمن يمارس الأرجل والظهر — يحمي العمود الفقري."},
+
+{en:"Plank Hold",ar:"بلانك — ثبات الكور",muscle:"كور كامل + كتف + أرداف",tag:"Bodyweight",sets:4,reps:"45-60 sec",rest:"30s",color:"#c026d3",
+img:"https://fitnessvolt.com/wp-content/uploads/2022/06/plank-exercise.jpg",
+yt:"https://www.youtube.com/results?search_query=plank+proper+form",
+muscles:["Full Core","Lower Back","Shoulders","Glutes"],
+desc:"لا يوجد جهاز يحل محل البلانك لتقوية ثبات الكور.",
+steps:["استنّد على الساعدين والأصابع","الجسم خط مستقيم من الرأس للكعبين","البطن مشدودة كأنك تتوقع ضربة","الأرداف لا ترتفع ولا تتدلى","التنفس منتظم طوال المدة"],
+machine:"⚙️ بدون جهاز — أرضية الجيم كافية.",
+tip:"💡 لما تبدأ تتأرجح انهِ التمرين. الجودة أهم من المدة."}
+]};
+
+function buildAll(){
+  Object.keys(DATA).forEach(day=>{
+    const g=document.getElementById('g-'+day);
+    if(!g)return;
+    DATA[day].forEach((ex,i)=>{
+      const icon=ICONS[ex.tag]||'🏋️';
+      const card=document.createElement('div');
+      card.className='ex-card';
+      card.onclick=()=>openModal(day,i);
+      card.innerHTML=`
+<div class="ex-img-wrap">
+  <div class="ex-img-bg" style="background:${ex.color}25">
+    <div class="ex-img-bg-icon">${icon}</div>
+    <div class="ex-img-bg-text">${ex.en}</div>
+  </div>
+  <img class="ex-img-real" src="${ex.img}" alt="${ex.en}" loading="lazy"
+    onload="this.classList.add('loaded')"
+    onerror="this.style.display='none'">
+  <div class="ex-img-overlay"></div>
+  <div class="ex-en-title">${ex.en}</div>
+  <span class="ex-num" style="background:${ex.color}">${i+1}</span>
+  <span class="ex-tag">${ex.tag}</span>
+</div>
+<div class="ex-body">
+  <div class="ex-ar-name">${ex.ar} · ${ex.muscle}</div>
+  <div class="ex-pills">
+    <span class="pill p-s">${ex.sets} sets</span>
+    <span class="pill p-r">${ex.reps} reps</span>
+    <span class="pill p-rest">Rest ${ex.rest}</span>
+  </div>
+  <div class="ex-tip">${ex.tip}</div>
+</div>`;
+      g.appendChild(card);
+    });
+  });
+}
+
+function openModal(day,idx){
+  const ex=DATA[day][idx];
+  document.getElementById('m-en').textContent=ex.en;
+  document.getElementById('m-ar').textContent=ex.ar+' · '+ex.muscle;
+  const mi=document.getElementById('m-img');
+  mi.src=ex.img; mi.onerror=()=>{mi.style.display='none'};
+  document.getElementById('m-stats').innerHTML=`
+    <div class="mstat"><div class="mstat-v">${ex.sets}</div><div class="mstat-l">Sets</div></div>
+    <div class="mstat"><div class="mstat-v">${ex.reps}</div><div class="mstat-l">Reps</div></div>
+    <div class="mstat"><div class="mstat-v">${ex.rest}</div><div class="mstat-l">Rest</div></div>`;
+  document.getElementById('m-muscles').innerHTML=ex.muscles.map(m=>`<span class="chip">${m}</span>`).join('');
+  document.getElementById('m-desc').textContent=ex.desc;
+  document.getElementById('m-steps').innerHTML=ex.steps.map((s,i)=>`
+    <div class="step">
+      <span class="step-n" style="background:${ex.color}">${i+1}</span>
+      <span class="step-t">${s}</span>
+    </div>`).join('');
+  document.getElementById('m-machine').textContent=ex.machine;
+  document.getElementById('m-tip').textContent=ex.tip;
+  document.getElementById('m-yt').href=ex.yt;
+  document.getElementById('modal').classList.add('open');
+  document.querySelector('.modal').scrollTop=0;
+}
+
+function closeModal(e){if(e.target===document.getElementById('modal'))document.getElementById('modal').classList.remove('open')}
+
+function go(name){
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('tab-'+name).classList.add('active');
+  const m={home:0,mon:1,wed:2,thu:3,sat:4,sun:5,tips:6};
+  if(m[name]!==undefined)document.querySelectorAll('.nav-tab')[m[name]].classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+buildAll();
+</script>
+</body>
+</html>
